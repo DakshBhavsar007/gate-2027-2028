@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GATE CS & DA Command Center + Gamified Arena</title>
+<meta name="description" content="Production-grade preparation dashboard, gamified MCQ quiz arena with coins, leaderboard, per-question GATE timer, and full CS/DA question bank.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #080D1A;
+    --bg-surface: #0F172A;
+    --bg-elevated: #16223B;
+    --bg-card: rgba(15, 23, 42, 0.88);
+    --border: #1E293B;
+    --border-strong: #334155;
+    --border-accent: rgba(94, 234, 212, 0.4);
+    --text-main: #F1F5F9;
+    --text-muted: #94A3B8;
+    --text-faint: #64748B;
+    
+    --trace: #5EEAD4;
+    --trace-glow: rgba(94, 234, 212, 0.2);
+    --coin-gold: #FCD34D;
+    --coin-glow: rgba(252, 211, 77, 0.3);
+    --amber: #F59E0B;
+    --amber-bg: rgba(245, 158, 11, 0.12);
+    --correct: #34D399;
+    --correct-bg: rgba(52, 211, 153, 0.12);
+    --wrong: #F87171;
+    --wrong-bg: rgba(248, 113, 113, 0.12);
+    --purple: #C084FC;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --blur: blur(14px);
+  }
+
+  [data-theme="light"] {
+    --bg-base: #F1F5F9;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #E2E8F0;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --border: #CBD5E1;
+    --border-strong: #94A3B8;
+    --border-accent: rgba(13, 148, 136, 0.4);
+    --text-main: #0F172A;
+    --text-muted: #475569;
+    --text-faint: #94A3B8;
+    
+    --trace: #0D9488;
+    --trace-glow: rgba(13, 148, 136, 0.15);
+    --coin-gold: #D97706;
+    --coin-glow: rgba(217, 119, 6, 0.2);
+    --amber: #D97706;
+    --amber-bg: #FEF3C7;
+    --correct: #059669;
+    --correct-bg: #D1FAE5;
+    --wrong: #DC2626;
+    --wrong-bg: #FEE2E2;
+    --purple: #7E22CE;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: 
+      radial-gradient(circle at 15% 0%, rgba(94,234,212,0.08), transparent 45%),
+      radial-gradient(circle at 85% 95%, rgba(252,211,77,0.06), transparent 50%),
+      var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 20px 16px 80px;
+  }
+
+  .app-container {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .brand-badge {
+    background: linear-gradient(135deg, var(--trace), var(--coin-gold));
+    color: #06201C;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.05em;
+  }
+  .brand h1 {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+  .brand h1 span { color: var(--trace); }
+  
+  /* User Stats Pills */
+  .user-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .coin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    background: rgba(252, 211, 77, 0.12);
+    border: 1px solid rgba(252, 211, 77, 0.35);
+    color: var(--coin-gold);
+    border-radius: 999px;
+    box-shadow: 0 0 10px var(--coin-glow);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .coin-badge.pop { transform: scale(1.2); }
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: rgba(192, 132, 252, 0.12);
+    border: 1px solid rgba(192, 132, 252, 0.35);
+    color: var(--purple);
+    border-radius: 999px;
+  }
+
+  /* Bus Progress Bar */
+  .bus {
+    height: 4px;
+    width: 100%;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 10px 0 1.25rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .bus-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--trace), var(--coin-gold));
+    width: 0%;
+    transition: width 0.35s ease;
+    box-shadow: 0 0 8px rgba(94,234,212,0.6);
+  }
+
+  /* Navigation Tabs */
+  .tab-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.4rem;
+    background: var(--bg-surface);
+    padding: 0.4rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 0.65rem 0.95rem;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(94, 234, 212, 0.05);
+    border-color: var(--border);
+  }
+  .tab-btn.active {
+    background: rgba(94, 234, 212, 0.12);
+    color: var(--trace);
+    border-color: var(--trace);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Cards & Layout */
+  .panel-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .panel-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    width: 36px;
+    height: 2px;
+    background: var(--trace);
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-main);
+  }
+  .panel-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  /* Mode Selectors in Quiz */
+  .mode-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin: 1.25rem 0;
+  }
+  .mode-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  .mode-card:hover {
+    border-color: var(--trace);
+  }
+  .mode-card.active {
+    border-color: var(--trace);
+    background: rgba(94, 234, 212, 0.08);
+    box-shadow: 0 0 12px var(--trace-glow);
+  }
+  .mode-title {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mode-sub {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+    line-height: 1.4;
+  }
+
+  /* Question Tabs */
+  .chapter-tabs-wrap {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .q-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 7px 11px;
+    border-radius: 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .q-tab:hover { color: var(--text-main); border-color: var(--trace); }
+  .q-tab.active {
+    background: rgba(94, 234, 212, 0.12);
+    color: var(--trace);
+    border-color: var(--trace);
+  }
+  .q-tab.da-type { border-color: rgba(245, 158, 11, 0.4); }
+  .q-tab.da-type.active { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+
+  /* Live Question View */
+  .qmeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .qnum { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+  .qtimer-badge {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--coin-gold);
+    background: rgba(252, 211, 77, 0.1);
+    border: 1px solid rgba(252, 211, 77, 0.3);
+    padding: 3px 10px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .qtimer-badge.urgent {
+    color: var(--wrong);
+    background: var(--wrong-bg);
+    border-color: var(--wrong);
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+  .question-text {
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 6px 0 20px;
+    font-weight: 500;
+    white-space: pre-line;
+  }
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .opt:hover {
+    border-color: var(--trace);
+    background: rgba(94, 234, 212, 0.05);
+  }
+  .opt .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .opt.correct .tag { background: var(--correct); color: #06201C; border-color: var(--correct); }
+  .opt.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .opt.wrong .tag { background: var(--wrong); color: #2A0A0A; border-color: var(--wrong); }
+  .opt.disabled { cursor: default; }
+
+  /* Floating Coin Animation */
+  .coin-popup {
+    position: fixed;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--coin-gold);
+    text-shadow: 0 0 10px rgba(252, 211, 77, 0.8);
+    animation: floatUp 1.2s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+    z-index: 10000;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(0.8); }
+    50% { transform: translateY(-35px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-70px) scale(1); }
+  }
+
+  /* Leaderboard Styling */
+  .leaderboard-podium {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 0.8rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+  }
+  .podium-slot {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 0.8rem;
+    text-align: center;
+    position: relative;
+  }
+  .podium-slot.rank-1 {
+    background: linear-gradient(180deg, rgba(252, 211, 77, 0.15), var(--bg-elevated));
+    border-color: rgba(252, 211, 77, 0.4);
+    transform: translateY(-8px);
+  }
+  .podium-slot.rank-2 { border-color: rgba(148, 163, 184, 0.3); }
+  .podium-slot.rank-3 { border-color: rgba(245, 158, 11, 0.3); }
+  .podium-rank-icon { font-size: 1.8rem; margin-bottom: 0.2rem; }
+  .podium-name { font-family: var(--font-mono); font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
+  .podium-coins { font-family: var(--font-mono); font-size: 0.82rem; color: var(--coin-gold); margin-top: 0.3rem; }
+
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+  .leaderboard-table th {
+    font-family: var(--font-mono);
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .leaderboard-table td {
+    padding: 0.75rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .leaderboard-table tr.user-row {
+    background: rgba(94, 234, 212, 0.08);
+    border: 1px solid var(--trace);
+  }
+  .leaderboard-table tr.user-row td { color: var(--trace); font-weight: 600; }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 13.5px;
+    background: var(--trace);
+    color: #06201C;
+    border: none;
+    border-radius: 7px;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(94, 234, 212, 0.25);
+  }
+  .btn.secondary {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border);
+  }
+  .btn.secondary:hover {
+    border-color: var(--trace);
+    color: var(--trace);
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .hidden { display: none !important; }
+
+  /* Toast Notification */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--bg-elevated);
+    color: var(--text-main);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.84rem;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand-badge">GATE 2027–28</span>
+      <h1>CS <span>&amp;</span> DA Arena</h1>
+    </div>
+    
+    <div class="user-stats-bar">
+      <div class="coin-badge" id="headerCoins">🪙 <span id="userCoinsCount">0</span> Coins</div>
+      <div class="rank-badge" id="headerRank">🏆 Rank #<span id="userRankNum">5</span></div>
+      <button class="btn secondary btn-sm" id="themeToggle">🌓 Theme</button>
+    </div>
+  </header>
+
+  <!-- Animated Progress Bus Line -->
+  <div class="bus"><div class="bus-fill" id="busFill"></div></div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tab-nav" id="mainTabs">
+    <button class="tab-btn active" data-tab="quiz">⚡ Live Quiz &amp; Timers</button>
+    <button class="tab-btn" data-tab="leaderboard">🏆 Arena Leaderboard</button>
+    <button class="tab-btn" data-tab="drive">☁️ Drive Papers (15)</button>
+    <button class="tab-btn" data-tab="review">🔁 Spaced Review</button>
+    <button class="tab-btn" data-tab="analytics">📊 Analytics</button>
+  </nav>
+
+  <!-- TAB 1: GAMIFIED LIVE QUIZ & GATE TIMERS -->
+  <div class="tab-panel active" id="tab-quiz">
+    <!-- Setup Screen -->
+    <div id="quizSetupScreen" class="panel-card">
+      <h2 class="panel-title">Interactive Quiz Arena</h2>
+      <p class="panel-hint">Configure your practice session. Earn coins on correct answers to climb the AIR Leaderboard!</p>
+
+      <!-- 1. Mode Selector -->
+      <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); text-transform:uppercase; margin-top:1.2rem;">Select Game Mode:</div>
+      <div class="mode-selector-grid">
+        <div class="mode-card active" data-mode="gate" id="modeGate">
+          <div class="mode-title">GATE Standard ⏱️ <span style="color:var(--coin-gold); font-size:11px;">+15 🪙</span></div>
+          <div class="mode-sub">165s / Question (Official GATE Exam Pace). Calibrate your exam hall time discipline.</div>
+        </div>
+
+        <div class="mode-card" data-mode="hard" id="modeHard">
+          <div class="mode-title">Speed Blitz 🔥 <span style="color:var(--coin-gold); font-size:11px;">+25 🪙</span></div>
+          <div class="mode-sub">60s / Question (High Pressure Hard Mode). Double coins for speed masters!</div>
+        </div>
+
+        <div class="mode-card" data-mode="relaxed" id="modeRelaxed">
+          <div class="mode-title">Relaxed Mode ☕ <span style="color:var(--coin-gold); font-size:11px;">+10 🪙</span></div>
+          <div class="mode-sub">No timer. Learn at your own pace with instant green/red feedback.</div>
+        </div>
+      </div>
+
+      <!-- 2. Question Count Selector -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); text-transform:uppercase;">Select Subject / Track:</div>
+        <div style="display:flex; gap:6px; align-items:center; font-family:var(--font-mono); font-size:12px;">
+          <span>Questions:</span>
+          <select id="quizLengthSelect" style="background:var(--bg-elevated); color:var(--text-main); border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-family:var(--font-mono); font-size:11px;">
+            <option value="5">Quick 5 Questions</option>
+            <option value="10" selected>Standard 10 Questions</option>
+            <option value="20">Deep Drill 20 Questions</option>
+            <option value="65">Full GATE Set (65 Questions)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 3. Quick Subject Filters -->
+      <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+        <button class="btn secondary btn-sm" id="selectAllTopicsBtn">Select All</button>
+        <button class="btn secondary btn-sm" id="selectDaTopicsBtn" style="color:var(--amber); border-color:var(--amber);">Select DA Only (Data Science &amp; AI)</button>
+        <button class="btn secondary btn-sm" id="selectCsTopicsBtn" style="color:var(--trace); border-color:var(--trace);">Select CS Only (Algorithms, OS, CN, COA)</button>
+        <button class="btn secondary btn-sm" id="clearAllTopicsBtn">Clear</button>
+      </div>
+
+      <!-- 4. Individual Chapter Tabs -->
+      <div class="chapter-tabs-wrap" id="quizChapterTabs"></div>
+      
+      <button class="btn" id="startLiveQuizBtn" style="margin-top:10px; width:100%;">Launch Quiz Arena →</button>
+    </div>
+
+    <!-- Active Live Quiz Screen -->
+    <div id="activeQuizScreen" class="panel-card hidden">
+      <div class="qmeta">
+        <span class="qnum" id="liveQNum">Question 1 / 10</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span class="qtimer-badge" id="liveQTimer">⏱️ <span id="timerCountdown">165</span>s</span>
+          <span class="tag" id="liveQChapter" style="font-family:var(--font-mono); font-size:11px; color:var(--trace); border:1px solid var(--border); padding:2px 8px; border-radius:12px;">Section</span>
+        </div>
+      </div>
+      <div class="question-text" id="liveQText"></div>
+      <div class="options-list" id="liveQOptions"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:8px;">
+        <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-muted);">
+          Live Score: <b id="liveCurrentScore" style="color:var(--trace);">0</b>/<span id="liveTotalCount">0</span>
+          &middot; Session Coins: <b id="liveSessionCoins" style="color:var(--coin-gold);">+0 🪙</b>
+        </span>
+        <button class="btn" id="liveNextBtn" disabled>Next Question →</button>
+      </div>
+    </div>
+
+    <!-- Quiz Result Screen -->
+    <div id="quizResultScreen" class="panel-card hidden">
+      <p style="font-family:var(--font-mono); font-size:42px; font-weight:700; color:var(--trace); margin:0;" id="quizFinalScore">0/0</p>
+      <div style="font-family:var(--font-mono); font-size:15px; color:var(--coin-gold); margin:4px 0 16px;" id="quizCoinsEarned">+0 Coins Earned! 🪙</div>
+      <p style="color:var(--text-muted); font-size:14px; margin:4px 0 16px;" id="quizFinalMsg"></p>
+      
+      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+        <button class="btn" id="retryQuizBtn">Retry Same Set</button>
+        <button class="btn secondary" id="reviewWrongBtn">Review Wrong Answers</button>
+        <button class="btn secondary" id="changeTopicsBtn">← Change Topics / Settings</button>
+      </div>
+      <div id="quizReviewList"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: LEADERBOARD ARENA -->
+  <div class="tab-panel" id="tab-leaderboard">
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <div>
+          <h2 class="panel-title">GATE CS &amp; DA Aspirant Leaderboard</h2>
+          <p class="panel-hint">Live simulated rankings based on Coins earned, accuracy %, and active streaks.</p>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <input id="userNameInput" placeholder="Your Name" value="Aspirant_Parul" style="background:var(--bg-elevated); color:var(--text-main); border:1px solid var(--border); border-radius:4px; padding:4px 8px; font-family:var(--font-mono); font-size:11px;">
+          <button class="btn secondary btn-sm" id="saveUserNameBtn">Save</button>
+        </div>
+      </div>
+
+      <!-- Podium for Top 3 -->
+      <div class="leaderboard-podium" id="leaderboardPodium">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Leaderboard Full Table -->
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Aspirant</th>
+            <th>Focus Track</th>
+            <th>Coins</th>
+            <th>Accuracy</th>
+            <th>Streak</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardTableBody">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: GOOGLE DRIVE PAPERS HUB -->
+  <div class="tab-panel" id="tab-drive">
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <div>
+          <h2 class="panel-title">Google Drive GATE Paper Library (CS &amp; DA)</h2>
+          <p class="panel-hint">Official papers indexed from your Google Drive <code>GATE_PYQ</code> folder.</p>
+        </div>
+        <span class="brand-badge">Google Drive MCP</span>
+      </div>
+
+      <div style="margin-bottom:1rem; font-size:0.84rem; color:var(--text-muted);">
+        Click <b>"Start Quiz on this Paper"</b> to launch the interactive quiz engine with custom GATE timers for that specific paper:
+      </div>
+
+      <div id="drivePaperList"></div>
+    </div>
+  </div>
+
+  <!-- TAB 4: SPACED REPETITION LEITNER QUEUE -->
+  <div class="tab-panel" id="tab-review">
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <div>
+          <h2 class="panel-title">Leitner Spaced Repetition Queue</h2>
+          <p class="panel-hint">5-Box Interval System: 1d → 3d → 7d → 16d → 35d</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px; margin-bottom:1.5rem;" id="leitnerStatGrid"></div>
+      <h3 style="font-family:var(--font-mono); font-size:0.95rem; margin:1.5rem 0 0.8rem;">Items Due for Review Today</h3>
+      <div id="dueQueueList"></div>
+    </div>
+  </div>
+
+  <!-- TAB 5: ANALYTICS -->
+  <div class="tab-panel" id="tab-analytics">
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <div>
+          <h2 class="panel-title">Performance Analytics</h2>
+          <p class="panel-hint">Subject breakdown, accuracy rates, and coin distribution</p>
+        </div>
+      </div>
+      <div id="accuracyContainer"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:1.5rem; margin-top:2.5rem; font-size:12px; color:var(--text-muted); flex-wrap:wrap; gap:10px;">
+    <div>GATE CS &amp; DA 2027–2028 Command Center · Gamified Arena</div>
+    <div style="display:flex; gap:0.6rem;">
+      <a href="gate-interactive-quiz.html" class="btn secondary btn-sm" target="_blank">⚡ Standalone Quiz</a>
+      <button class="btn secondary btn-sm" id="exportBackupBtn">💾 Export JSON</button>
+      <label class="btn secondary btn-sm" style="margin:0; cursor:pointer;">
+        📂 Import <input type="file" id="importBackupInput" accept=".json" style="display:none;">
+      </label>
+      <button class="btn secondary btn-sm" id="resetDataBtn" style="color:var(--wrong);">⚠️ Reset</button>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Toast -->
+<div id="toast">Saved successfully!</div>
+
+<script>
+/* ============ MASTER QUIZ DATASET (CS + DA + COA) ============ */
+const QUIZ_DATA = {
+  // --- COA (Ch-9 & Ch-10) ---
+  "Booth's Algorithm (COA Ch-9)": [
+    ["Which of the following is used for binary multiplication?",["Restoring Multiplication","Booth's Algorithm","Pascal's Algorithm","Digit by Digit Multiplication"],1],
+    ["Booth's Algorithm is applied on",["decimal numbers","binary numbers","hexadecimal numbers","octal numbers"],1],
+    ["If Booth's Multiplication is performed on the numbers 22×3, then what is 3 referred to as?",["accumulator","multiplicand","quotient","multiplier"],3],
+    ["What is the value of n in multiplication of 110 × 1000?",["2","3","4","0"],2],
+    ["What will be the value obtained after multiplication of (-2)10 × (-3)10 using Booth's Algorithm?",["6","-6","-2","-3"],0],
+    ["In Booth multiplication algorithm, initially value for Q-1 is?",["0","1","11","10"],0],
+    ["In Booth multiplication algorithm, initial value for AC is?",["0","1","11","10"],0],
+    ["In Booth multiplication algorithm, if Q0 is 0 and Q-1 is 0, what will be next step?",["ASR","A=A+M","N=N-1","A=A-M"],0],
+    ["In Booth multiplication algorithm, if Q0 is 0 and Q-1 is 1, what will be next step?",["A=A+M","ASR","A=A-M","N=N-1"],0],
+    ["In Booth multiplication algorithm, if Q0 is 1 and Q-1 is 0, what will be next step?",["N=N-1","A=A-M","ASR","A=A+M"],1],
+    ["In Booth multiplication algorithm, if Q0 is 1 and Q-1 is 1, what will be next step?",["A=A-M","N=N-1","A=A+M","ASR"],3],
+    ["In Booth Division algorithm, if AC < 0, what will be the next operation?",["Q0←1","Q0←0, A←A+M","COUNT←COUNT-1","A←A+M"],1],
+    ["In Booth Division algorithm, if AC > 0, what will be the next step?",["COUNT←COUNT-1","A←A+M","Q0←1, A←A+M","Q0←1"],3],
+    ["For (7)10 × (3)10 using Booth's algorithm, what will be final data in binary in accumulator for sequence count 4?",["1111","1001","1100","1010"],2],
+    ["For (-9)10 × (-13)10 using Booth's algorithm, what will be final data in binary in accumulator for sequence count 4?",["1011","1111","10","1010"],2]
+  ],
+  "Memory Organization (COA Ch-9)": [
+    ["The memory unit that communicates directly with CPU is called",["Main memory","secondary memory","cache memory","auxiliary memory"],0],
+    ["The typical access time ratio between cache and main memory is about?",["1 to 9","1 to 10","1 to 7","10 to 15"],2],
+    ["Which of the following statements is/are correct? (1) CPU has direct access to main memory (2) CPU has direct access to cache memory (3) CPU has direct access to auxiliary memory",["only 1 and 3","only 2 and 3","only 1","only 1 and 2"],3],
+    ["Block size in cache memory typically ranges from?",["1 to 16 words","8 to 16 words","16 to 24 words","7 to 15 words"],0],
+    ["Which RAM is designed with flip-flop?",["Dynamic RAM","Static RAM","ROM","None of above"],1],
+    ["Which type of memory have a highest storage capacity in single memory chip?",["Dynamic RAM","Static RAM","ROM","None of above"],0],
+    ["___ is non-volatile memory.",["RAM","ROM","CPU","None of above"],1],
+    ["Performance of cache memory is measured in terms of quantity called?",["Hit ratio","Miss ratio","Seek ratio","None of above"],0],
+    ["In direct mapping, n-bit memory address is divided into ___ fields: k bits for index field and n-k bits for tag field.",["1","2","3","4"],1],
+    ["Static RAM (SRAM) is faster than Dynamic RAM (DRAM) because:",["SRAM uses capacitors","SRAM is costlier","SRAM does not require refreshing","SRAM is cheaper"],2],
+    ["A 24-bit address bus has maximum accessible memory capacity of ___.",["64 MB","16 MB","1 GB","4 GB"],1],
+    ["What is the formula for Hit Ratio?",["Hit/(Hit + Miss)","Miss/(Hit + Miss)","(Hit + Miss)/Hit","(Hit + Miss)/Miss"],0]
+  ],
+  "I/O Organization (COA Ch-10)": [
+    ["Input or output devices that are connected to computer are called",["Input/Output Subsystem","Peripheral Devices","Interfaces","Interrupt"],1],
+    ["The process of matching of operating speeds of CPU and other peripherals is known as -",["Data conversion","synchronization","device selection","cycle stealing"],1],
+    ["In memory-mapped I/O:",["The I/O devices and the memory share the same address space","The I/O devices have a separate address space","The memory and I/O devices have an associated address space","A part of memory is specifically set aside for the I/O operation"],0],
+    ["The term 'cycle stealing' refers to:",["Interrupt-based data transfer","Polling mode data transfer","DMA-based data transfer","Clock cycle overriding"],2],
+    ["Which mode of transfer has a time consuming transfer process as CPU monitors peripheral devices constantly?",["Programmed I/O","Interrupt I/O","DMA","Both a and b"],0],
+    ["In which mode does the I/O module and main memory exchange data directly, without processor involvement?",["DMA","Programmed I/O","Interrupt I/O","both b and c"],0],
+    ["Which of the given methods are asynchronous data transfer methods?",["Handshaking Method","Strobe Pulse Method","cycle stealing","both a and b"],3],
+    ["The method of synchronizing the processor with the I/O device in which the device sends a signal when it is ready is ___",["Exceptions","Signal Handling","DMA","Interrupts"],3]
+  ],
+
+  // --- GATE DA (DATA SCIENCE & AI) PAPERS (2024–2026) ---
+  "Machine Learning (GATE DA)": [
+    ["In Linear Regression, which analytical method solves for optimal weights minimizing Mean Squared Error?",["Normal Equation (XᵀX)⁻¹Xᵀy","Gradient Ascent","K-Means Clustering","Backpropagation"],0],
+    ["Which metric is best suited to evaluate a classification model with severe class imbalance (e.g. 99% Negative, 1% Positive)?",["Accuracy","F1-Score / PR-AUC","Mean Absolute Error","R² Score"],1],
+    ["In Decision Trees, if a split results in subsets containing samples of purely one class, what is the Gini Impurity of that split?",["1.0","0.5","0.0","Infinity"],2],
+    ["Which regularization technique sets some feature coefficients to exactly zero, performing sparse feature selection?",["L1 Regularization (Lasso)","L2 Regularization (Ridge)","Dropout","Early Stopping"],0],
+    ["In Support Vector Machines (SVM), what are support vectors?",["Data points furthest from the boundary","Data points lying on or closest to the margin boundary","Centroids of the clusters","Eigenvectors of covariance"],1],
+    ["In K-Means clustering, what does the inertia / within-cluster sum of squares (WCSS) measure?",["Distance between cluster centroids","Total squared Euclidean distance of samples to their closest cluster center","Number of misclassified samples","Variance of the target variable"],1],
+    ["Which kernel function is defined as K(x, z) = exp(-γ ||x - z||²)?",["Polynomial Kernel","Radial Basis Function (RBF) / Gaussian Kernel","Sigmoid Kernel","Linear Kernel"],1],
+    ["In Principal Component Analysis (PCA), the principal components are eigenvectors of which matrix?",["Covariance / Correlation matrix","Hessian matrix","Jacobian matrix","Adjacency matrix"],0]
+  ],
+  "AI & Search Algorithms (GATE DA)": [
+    ["A* search algorithm is guaranteed to be complete and optimal if the heuristic h(n) is:",["Admissible (never overestimates true cost)","Consistent / Monotonic","Greedy","Overestimating"],0],
+    ["What is the space complexity of Depth-First Search (DFS) for a tree with branching factor b and depth m?",["O(b^m)","O(b·m)","O(m)","O(b)"],1],
+    ["In Minimax with Alpha-Beta pruning, what does the Alpha value represent?",["The maximum lower bound of the score that the maximizing player is assured of","The minimum upper bound for the minimizing player","The depth of search tree","The heuristic value at root"],0],
+    ["Which local search algorithm escapes local maxima by occasionally accepting worse moves with decreasing probability?",["Hill Climbing","Simulated Annealing","Breadth First Search","Beam Search"],1],
+    ["In Propositional Logic, if (P → Q) is TRUE and P is TRUE, what inference rule derives Q is TRUE?",["Modus Ponens","Modus Tollens","Resolution","Conjunction Elimination"],0]
+  ],
+  "Probability & Stats for DA (GATE DA)": [
+    ["If events A and B are independent with P(A) = 0.4 and P(B) = 0.5, what is P(A ∪ B)?",["0.9","0.7","0.2","0.6"],1],
+    ["A continuous random variable X follows Normal distribution N(μ, σ²). What percentage of values lie within [μ - 2σ, μ + 2σ]?",["68.2%","95.4%","99.7%","50.0%"],1],
+    ["Let X be a Poisson random variable with parameter λ = 3. What is the variance of X?",["3","9","√3","1/3"],0],
+    ["According to Bayes' Theorem, what is P(A|B)?",["P(B|A) · P(A) / P(B)","P(A) · P(B) / P(B|A)","P(A ∩ B) · P(B)","P(A) + P(B) - P(A ∩ B)"],0],
+    ["In hypothesis testing, a Type I error occurs when:",["Null hypothesis is true, but rejected (False Positive)","Null hypothesis is false, but accepted","Sample size is small","p-value equals 1"],0]
+  ],
+  "Linear Algebra & Optimization (GATE DA)": [
+    ["What is the rank of an n×n matrix with all entries equal to 1?",["n","1","0","n - 1"],1],
+    ["If matrix A is symmetric and real, its eigenvalues are guaranteed to be:",["Purely imaginary","Real numbers","Positive always","Zero"],1],
+    ["A function f(x) is strictly convex if for all x, y and θ ∈ (0, 1):",["f(θx + (1-θ)y) < θ f(x) + (1-θ) f(y)","f(θx + (1-θ)y) > θ f(x) + (1-θ) f(y)","f'(x) = 0","f''(x) < 0"],0],
+    ["In Singular Value Decomposition (SVD) of matrix A = U Σ Vᵀ, the singular values in Σ are:",["Square roots of non-negative eigenvalues of AᵀA","Eigenvalues of U","Determinants of V","Traces of A"],0]
+  ],
+
+  // --- GATE CS CORE SUBJECTS ---
+  "Algorithms & Recurrences (GATE CS)": [
+    ["What is the solution to T(n) = 2T(n/2) + n log n?",["Θ(n log n)","Θ(n log² n)","Θ(n² log n)","Θ(n²)"],1],
+    ["What is the time complexity of T(n) = T(n/2) + n?",["O(n)","O(n log n)","O(n²)","O(log n)"],0],
+    ["What is the worst-case number of swaps in Selection Sort on n elements?",["O(n)","O(n log n)","O(n²)","O(1)"],0],
+    ["Which sorting algorithm has guaranteed Θ(n log n) time in worst case?",["Merge sort","Bubble sort","Quick sort","Selection sort"],0],
+    ["What is the minimum number of edge relaxations in Bellman-Ford to detect a negative cycle on n vertices?",["n - 1","n","n(n - 1)","2n"],1]
+  ],
+  "Programming & Data Structures (GATE CS)": [
+    ["Queue implemented with singly linked list (head & tail). Enqueue at head, dequeue at tail. Time complexities?",["Θ(1), Θ(1)","Θ(1), Θ(n)","Θ(n), Θ(1)","Θ(n), Θ(n)"],1],
+    ["Minimum number of nodes in an AVL tree of height 5 (where height 0 has 1 node)?",["20","12","32","16"],0],
+    ["Which traversal of a Binary Search Tree (BST) produces sorted keys in ascending order?",["Preorder","Inorder","Postorder","Level order"],1],
+    ["What is the time complexity to insert an element into a binary max-heap of size n?",["O(1)","O(log n)","O(n)","O(n log n)"],1]
+  ],
+  "Operating Systems (GATE CS)": [
+    ["A system has 32-bit virtual address and 4 KB page size. With 4-byte PTE, what is single-level page table size?",["4 MB","2 MB","1 MB","8 MB"],0],
+    ["Belady's anomaly occurs in which page replacement algorithm?",["FIFO","LRU","Optimal","LFU"],0],
+    ["Which condition is NOT a necessary condition for deadlock?",["Mutual exclusion","Hold and wait","Preemption allowed","Circular wait"],2],
+    ["In Round Robin scheduling, if time quantum is extremely large, it behaves as:",["FCFS","SJF","Priority Scheduling","LIFO"],0]
+  ],
+  "Computer Networks (GATE CS)": [
+    ["An organization has prefix 200.10.20.0/24 divided into /26 subnets. Maximum usable hosts per subnet?",["62","64","30","126"],0],
+    ["An IP packet of 4500 bytes (header 20B) is fragmented with MTU 1500B. Fragment offset of 3rd fragment?",["185","370","1480","2960"],1],
+    ["Which protocol operates at the Transport Layer to provide reliable connection-oriented delivery?",["UDP","TCP","IP","ICMP"],1],
+    ["In Stop-and-Wait ARQ, what is maximum channel efficiency if a = T_prop / T_trans?",["1 / (1 + 2a)","1 / (1 + a)","1 / a","2a / (1 + 2a)"],0]
+  ],
+  "General Aptitude (GATE All)": [
+    ["In a knock-out tournament of 64 players with no ties, how many matches are played in total?",["63","64","32","127"],0],
+    ["What is the antonym of protagonist?",["Antagonist","Agnostic","Anarchist","Arsonist"],0],
+    ["Two items sold at equal selling price with 10% profit and 10% loss. Net result?",["1% loss","1% profit","0% no loss no profit","2% loss"],0],
+    ["Class average 30.8, one mark corrected from 24 to 42, new average 31.4. Class size?",["30","25","35","40"],0]
+  ]
+};
+
+// Benchmark Peer Aspirants on Leaderboard
+const PEER_LEADERBOARD = [
+  { name: 'Arjun_IITB', track: 'CS Core', coins: 1420, accuracy: '94%', streak: 18, isUser: false },
+  { name: 'Sneha_IISc', track: 'Data Science & AI', coins: 1280, accuracy: '91%', streak: 14, isUser: false },
+  { name: 'Vikram_GATE_AIR', track: 'CS Core', coins: 960, accuracy: '88%', streak: 9, isUser: false },
+  { name: 'Rohan_DA_Pro', track: 'Data Science & AI', coins: 820, accuracy: '86%', streak: 7, isUser: false },
+  { name: 'Priya_IITM', track: 'CS Core', coins: 640, accuracy: '82%', streak: 5, isUser: false },
+  { name: 'Ananya_DA', track: 'Data Science & AI', coins: 490, accuracy: '79%', streak: 4, isUser: false }
+];
+
+// Drive Papers Index (Includes All DA Papers)
+const DRIVE_PAPERS = [
+  { name: 'DA2026.pdf', year: 2026, track: 'DA', focus: 'Official GATE 2026 Data Science & AI Paper', key: 'Machine Learning (GATE DA)' },
+  { name: 'DA2025.pdf', year: 2025, track: 'DA', focus: 'Official GATE 2025 Data Science & AI Paper', key: 'AI & Search Algorithms (GATE DA)' },
+  { name: 'DA2024.pdf', year: 2024, track: 'DA', focus: 'Official Inaugural GATE 2024 DA Paper', key: 'Probability & Stats for DA (GATE DA)' },
+  { name: '2026_CS1.pdf', year: 2026, track: 'CS', focus: 'Official GATE 2026 CS Session 1', key: 'Algorithms & Recurrences (GATE CS)' },
+  { name: '2026_CS2.pdf', year: 2026, track: 'CS', focus: 'Official GATE 2026 CS Session 2', key: 'Operating Systems (GATE CS)' },
+  { name: '2025_CS.pdf', year: 2025, track: 'CS', focus: 'IIT Roorkee Paper', key: 'Programming & Data Structures (GATE CS)' },
+  { name: '2024_CS.pdf', year: 2024, track: 'CS', focus: 'IISc Bangalore Paper', key: 'Computer Networks (GATE CS)' },
+  { name: '2023_CS.pdf', year: 2023, track: 'CS', focus: 'IIT Kanpur Paper', key: 'Algorithms & Recurrences (GATE CS)' },
+  { name: '2021_CS.pdf', year: 2021, track: 'CS', focus: 'IIT Bombay Paper', key: 'Operating Systems (GATE CS)' },
+  { name: '2020_CS.pdf', year: 2020, track: 'CS', focus: 'IIT Delhi Paper', key: 'Computer Networks (GATE CS)' },
+  { name: '2019_CS.pdf', year: 2019, track: 'CS', focus: 'IIT Madras Paper', key: 'Algorithms & Recurrences (GATE CS)' },
+  { name: '2018_CS.pdf', year: 2018, track: 'CS', focus: 'IIT Guwahati Paper', key: 'Programming & Data Structures (GATE CS)' },
+  { name: '2017_CS1.pdf', year: 2017, track: 'CS', focus: 'IIT Roorkee Paper', key: 'Algorithms & Recurrences (GATE CS)' },
+  { name: '2016_CS.pdf', year: 2016, track: 'CS', focus: 'IISc Bangalore Paper', key: 'Memory Organization (COA Ch-9)' },
+  { name: '2015_CS.pdf', year: 2015, track: 'CS', focus: 'IIT Kanpur Paper', key: 'Booth\'s Algorithm (COA Ch-9)' }
+];
+
+// App State
+let state = {
+  theme: 'dark',
+  userName: 'Aspirant_Parul',
+  coins: 0,
+  quizHistory: [],
+  reviewQueue: []
+};
+
+// Quiz Session Configuration
+let selectedMode = 'gate'; // 'gate' (165s), 'hard' (60s), 'relaxed' (no timer)
+let selectedTopics = new Set(Object.keys(QUIZ_DATA));
+let livePool = [];
+let liveIndex = 0;
+let liveScore = 0;
+let sessionCoins = 0;
+let liveAnswered = false;
+let wrongAttempts = [];
+
+// Per Question Timer State
+let questionTimer = null;
+let currentRemainingTime = 165;
+let initialQuestionTime = 165;
+
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function addDays(d, n) { const x = new Date(d || Date.now()); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); }
+
+// Audio Synthesis for Gamification
+function playChime(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(type === 'coin') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(987.77, ctx.currentTime); // B5
+      osc.frequency.exponentialRampToValueAtTime(1318.51, ctx.currentTime + 0.15); // E6
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    } else if(type === 'wrong') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    }
+  } catch(e) {}
+}
+
+function spawnCoinAnimation(x, y, amount) {
+  const el = document.createElement('div');
+  el.className = 'coin-popup';
+  el.textContent = `+${amount} 🪙`;
+  el.style.left = `${x - 25}px`;
+  el.style.top = `${y - 20}px`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+
+  const badge = document.getElementById('headerCoins');
+  if(badge) {
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 250);
+  }
+}
+
+// Storage Engine
+function loadState() {
+  try {
+    const saved = localStorage.getItem('gate_gamified_v5');
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  } catch(e) {}
+  document.documentElement.setAttribute('data-theme', state.theme || 'dark');
+  document.getElementById('userCoinsCount').textContent = state.coins || 0;
+  document.getElementById('userNameInput').value = state.userName || 'Aspirant_Parul';
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('gate_gamified_v5', JSON.stringify(state));
+    document.getElementById('userCoinsCount').textContent = state.coins || 0;
+    renderLeaderboard();
+  } catch(e) {}
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if(t) {
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+}
+
+// Render Setup Tabs
+function renderQuizTabs() {
+  const wrap = document.getElementById('quizChapterTabs');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  Object.keys(QUIZ_DATA).forEach(k => {
+    const isDa = k.includes('GATE DA');
+    const div = document.createElement('div');
+    div.className = 'q-tab' + (isDa ? ' da-type' : '') + (selectedTopics.has(k) ? ' active' : '');
+    div.textContent = k + ' · ' + QUIZ_DATA[k].length;
+    div.onclick = () => {
+      if(selectedTopics.has(k)) selectedTopics.delete(k);
+      else selectedTopics.add(k);
+      renderQuizTabs();
+    };
+    wrap.appendChild(div);
+  });
+}
+
+// Mode Selection
+document.querySelectorAll('.mode-card').forEach(card => {
+  card.onclick = () => {
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedMode = card.dataset.mode;
+  };
+});
+
+// Live Quiz Flow with Timers
+function startLiveQuiz(presetTopic = null) {
+  if(presetTopic && QUIZ_DATA[presetTopic]) {
+    selectedTopics = new Set([presetTopic]);
+    renderQuizTabs();
+  }
+  if(selectedTopics.size === 0) {
+    showToast('Please select at least one topic!');
+    return;
+  }
+
+  let rawPool = [];
+  selectedTopics.forEach(k => {
+    if(QUIZ_DATA[k]) {
+      QUIZ_DATA[k].forEach(q => {
+        rawPool.push({ chapter: k, question: q[0], options: q[1], correct: q[2] });
+      });
+    }
+  });
+
+  // Shuffle
+  for(let i = rawPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rawPool[i], rawPool[j]] = [rawPool[j], rawPool[i]];
+  }
+
+  const requestedLen = parseInt(document.getElementById('quizLengthSelect').value) || 10;
+  livePool = rawPool.slice(0, requestedLen);
+  liveIndex = 0;
+  liveScore = 0;
+  sessionCoins = 0;
+  wrongAttempts = [];
+
+  document.getElementById('liveTotalCount').textContent = livePool.length;
+  document.getElementById('liveSessionCoins').textContent = '+0 🪙';
+  document.getElementById('quizSetupScreen').classList.add('hidden');
+  document.getElementById('activeQuizScreen').classList.remove('hidden');
+  document.getElementById('quizResultScreen').classList.add('hidden');
+  showLiveQuestion();
+}
+
+function startQuestionTimer() {
+  clearInterval(questionTimer);
+  const timerBadge = document.getElementById('liveQTimer');
+  const timerDisplay = document.getElementById('timerCountdown');
+
+  if(selectedMode === 'relaxed') {
+    timerBadge.style.display = 'none';
+    return;
+  }
+  timerBadge.style.display = 'inline-flex';
+  timerBadge.classList.remove('urgent');
+
+  if(selectedMode === 'hard') {
+    initialQuestionTime = 60; // 60s Blitz
+  } else {
+    initialQuestionTime = 165; // 165s Official GATE Average Pace
+  }
+  currentRemainingTime = initialQuestionTime;
+  timerDisplay.textContent = currentRemainingTime;
+
+  questionTimer = setInterval(() => {
+    if(currentRemainingTime > 0) {
+      currentRemainingTime--;
+      timerDisplay.textContent = currentRemainingTime;
+      if(currentRemainingTime <= 15) {
+        timerBadge.classList.add('urgent');
+      }
+    } else {
+      clearInterval(questionTimer);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleTimeout() {
+  if(liveAnswered) return;
+  playChime('wrong');
+  showToast('⏰ Time Up for this question!');
+  const allOpts = document.querySelectorAll('#liveQOptions .opt');
+  allOpts.forEach(o => o.classList.add('disabled'));
+  
+  const q = livePool[liveIndex];
+  allOpts[q.correct].classList.add('correct');
+  wrongAttempts.push({ question: q.question, chosen: 'Time Out (Unattempted)', correct: q.options[q.correct], chapter: q.chapter });
+  
+  state.reviewQueue.push({
+    id: 'rev-' + Date.now(),
+    subject: q.chapter,
+    topic: q.question.slice(0, 75) + '...',
+    box: 0,
+    dueDate: addDays(todayStr(), 1),
+    errorType: 'Time Pressure'
+  });
+
+  liveAnswered = true;
+  document.getElementById('liveNextBtn').disabled = false;
+}
+
+function showLiveQuestion() {
+  liveAnswered = false;
+  const q = livePool[liveIndex];
+  document.getElementById('liveQNum').textContent = `Question ${liveIndex + 1} / ${livePool.length}`;
+  document.getElementById('liveQChapter').textContent = q.chapter;
+  document.getElementById('liveQText').textContent = q.question;
+  document.getElementById('liveCurrentScore').textContent = liveScore;
+  document.getElementById('liveNextBtn').disabled = true;
+  document.getElementById('liveNextBtn').textContent = (liveIndex === livePool.length - 1) ? 'Finish Arena Quiz →' : 'Next Question →';
+
+  const bus = document.getElementById('busFill');
+  if(bus) bus.style.width = ((liveIndex) / livePool.length * 100) + '%';
+
+  const optWrap = document.getElementById('liveQOptions');
+  optWrap.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<span class="tag">${letters[i]}</span><span>${opt}</span>`;
+    div.onclick = (e) => selectLiveOption(i, div, e);
+    optWrap.appendChild(div);
+  });
+
+  startQuestionTimer();
+}
+
+function selectLiveOption(i, el, evt) {
+  if(liveAnswered) return;
+  clearInterval(questionTimer);
+  liveAnswered = true;
+
+  const q = livePool[liveIndex];
+  const allOpts = document.querySelectorAll('#liveQOptions .opt');
+  allOpts.forEach(o => o.classList.add('disabled'));
+
+  const isCorrect = (i === q.correct);
+  if(isCorrect) {
+    el.classList.add('correct');
+    liveScore++;
+    playChime('coin');
+
+    // Calculate Coin Reward
+    let baseCoins = (selectedMode === 'hard') ? 25 : (selectedMode === 'gate' ? 15 : 10);
+    // Speed bonus if answered in first 30% of time
+    if(selectedMode !== 'relaxed' && currentRemainingTime > (initialQuestionTime * 0.7)) {
+      baseCoins += 5;
+    }
+    sessionCoins += baseCoins;
+    state.coins = (state.coins || 0) + baseCoins;
+    saveState();
+
+    // Spawn Animation
+    const rect = el.getBoundingClientRect();
+    spawnCoinAnimation(rect.left + rect.width / 2, rect.top, baseCoins);
+
+  } else {
+    el.classList.add('wrong');
+    allOpts[q.correct].classList.add('correct');
+    playChime('wrong');
+    wrongAttempts.push({ question: q.question, chosen: q.options[i], correct: q.options[q.correct], chapter: q.chapter });
+
+    state.reviewQueue.push({
+      id: 'rev-' + Date.now(),
+      subject: q.chapter,
+      topic: q.question.slice(0, 75) + '...',
+      box: 0,
+      dueDate: addDays(todayStr(), 1),
+      errorType: (selectedMode === 'hard' ? 'Time Pressure' : 'Concept Gap')
+    });
+  }
+
+  state.quizHistory.push({
+    date: todayStr(),
+    chapter: q.chapter,
+    correct: isCorrect
+  });
+
+  saveState();
+  document.getElementById('liveCurrentScore').textContent = liveScore;
+  document.getElementById('liveSessionCoins').textContent = `+${sessionCoins} 🪙`;
+  document.getElementById('liveNextBtn').disabled = false;
+}
+
+function finishLiveQuiz() {
+  clearInterval(questionTimer);
+  const bus = document.getElementById('busFill');
+  if(bus) bus.style.width = '100%';
+  document.getElementById('activeQuizScreen').classList.add('hidden');
+  document.getElementById('quizResultScreen').classList.remove('hidden');
+
+  document.getElementById('quizFinalScore').textContent = `${liveScore}/${livePool.length}`;
+  document.getElementById('quizCoinsEarned').textContent = `+${sessionCoins} Coins Earned This Session! 🪙`;
+
+  const pct = Math.round((liveScore / livePool.length) * 100);
+  let msg = '';
+  if(pct >= 85) msg = "Sensational score! Top percentile AIR readiness. 🔥";
+  else if(pct >= 60) msg = "Solid grasp — revisit the missed questions to secure marks.";
+  else msg = "Needs another review pass — check your wrong answers below.";
+  document.getElementById('quizFinalMsg').textContent = `${pct}% Accuracy · ${msg}`;
+  document.getElementById('quizReviewList').innerHTML = '';
+}
+
+// Render Leaderboard
+function renderLeaderboard() {
+  const total = state.quizHistory.length;
+  const correct = state.quizHistory.filter(q => q.correct).length;
+  const accStr = total > 0 ? `${Math.round((correct / total) * 100)}%` : '0%';
+
+  const userEntry = {
+    name: state.userName || 'Aspirant_Parul',
+    track: 'CS & DA Aspirant',
+    coins: state.coins || 0,
+    accuracy: accStr,
+    streak: Math.max(1, Math.floor((state.coins || 0) / 40)),
+    isUser: true
+  };
+
+  const allEntries = [...PEER_LEADERBOARD, userEntry].sort((a, b) => b.coins - a.coins);
+  const userRank = allEntries.findIndex(e => e.isUser) + 1;
+  document.getElementById('userRankNum').textContent = userRank;
+
+  // Podium
+  const podiumWrap = document.getElementById('leaderboardPodium');
+  if(podiumWrap && allEntries.length >= 3) {
+    const [p1, p2, p3] = [allEntries[0], allEntries[1], allEntries[2]];
+    podiumWrap.innerHTML = `
+      <div class="podium-slot rank-2">
+        <div class="podium-rank-icon">🥈</div>
+        <div class="podium-name">${p2.name}</div>
+        <div class="podium-coins">🪙 ${p2.coins}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${p2.accuracy} Acc</div>
+      </div>
+      <div class="podium-slot rank-1">
+        <div class="podium-rank-icon">👑</div>
+        <div class="podium-name" style="color:var(--coin-gold);">${p1.name}</div>
+        <div class="podium-coins" style="font-weight:700; font-size:1rem;">🪙 ${p1.coins}</div>
+        <div style="font-size:11px; color:var(--trace); margin-top:2px;">AIR 1 · ${p1.accuracy}</div>
+      </div>
+      <div class="podium-slot rank-3">
+        <div class="podium-rank-icon">🥉</div>
+        <div class="podium-name">${p3.name}</div>
+        <div class="podium-coins">🪙 ${p3.coins}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${p3.accuracy} Acc</div>
+      </div>
+    `;
+  }
+
+  // Table Body
+  const tbody = document.getElementById('leaderboardTableBody');
+  if(tbody) {
+    tbody.innerHTML = allEntries.map((e, idx) => `
+      <tr class="${e.isUser ? 'user-row' : ''}">
+        <td style="font-family:var(--font-mono); font-weight:700;">#${idx + 1} ${idx === 0 ? '👑' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : ''))}</td>
+        <td><b>${e.name}</b> ${e.isUser ? '<span style="font-size:10px; background:var(--trace); color:#000; padding:1px 5px; border-radius:3px; font-weight:700;">YOU</span>' : ''}</td>
+        <td style="color:var(--text-muted); font-size:12px;">${e.track}</td>
+        <td style="font-family:var(--font-mono); color:var(--coin-gold); font-weight:700;">🪙 ${e.coins}</td>
+        <td style="font-family:var(--font-mono);">${e.accuracy}</td>
+        <td style="font-family:var(--font-mono);">${e.streak}d 🔥</td>
+      </tr>
+    `).join('');
+  }
+}
+
+// Drive Papers
+function renderDriveHub() {
+  const container = document.getElementById('drivePaperList');
+  if(!container) return;
+  container.innerHTML = DRIVE_PAPERS.map(p => `
+    <div class="drive-item" style="display:flex; justify-content:space-between; align-items:center; padding:0.85rem 1rem; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:0.6rem; gap:1rem; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div style="padding:0.3rem 0.55rem; border-radius:4px; font-family:var(--font-mono); font-weight:700; font-size:0.72rem; ${p.track==='DA'?'background:var(--amber-bg); color:var(--amber);':'background:rgba(248,113,113,0.15); color:#f87171;'}">${p.track}</div>
+        <div>
+          <div style="font-weight:600; font-size:0.88rem;">${p.name}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">${p.focus} &middot; ${p.year}</div>
+        </div>
+      </div>
+      <button class="btn secondary btn-sm" onclick="startPaperQuiz('${p.key}')">Start Timed Quiz →</button>
+    </div>
+  `).join('');
+}
+
+window.startPaperQuiz = function(key) {
+  const quizTabBtn = document.querySelector('[data-tab="quiz"]');
+  if(quizTabBtn) quizTabBtn.click();
+  startLiveQuiz(key);
+};
+
+// Init Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderQuizTabs();
+  renderDriveHub();
+  renderLeaderboard();
+
+  // Tab Navigation
+  document.getElementById('mainTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if(!btn) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const p = document.getElementById('tab-' + btn.dataset.tab);
+    if(p) p.classList.add('active');
+  });
+
+  // Theme Toggle
+  document.getElementById('themeToggle').onclick = () => {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', state.theme);
+    saveState();
+  };
+
+  // Save User Name
+  document.getElementById('saveUserNameBtn').onclick = () => {
+    const name = document.getElementById('userNameInput').value.trim() || 'Aspirant';
+    state.userName = name;
+    saveState();
+    showToast('Username updated on Leaderboard!');
+  };
+
+  // Topic Quick Filters
+  document.getElementById('selectAllTopicsBtn').onclick = () => {
+    selectedTopics = new Set(Object.keys(QUIZ_DATA));
+    renderQuizTabs();
+  };
+  document.getElementById('selectDaTopicsBtn').onclick = () => {
+    selectedTopics = new Set(Object.keys(QUIZ_DATA).filter(k => k.includes('GATE DA')));
+    renderQuizTabs();
+  };
+  document.getElementById('selectCsTopicsBtn').onclick = () => {
+    selectedTopics = new Set(Object.keys(QUIZ_DATA).filter(k => !k.includes('GATE DA')));
+    renderQuizTabs();
+  };
+  document.getElementById('clearAllTopicsBtn').onclick = () => {
+    selectedTopics.clear();
+    renderQuizTabs();
+  };
+
+  // Start Quiz Button
+  document.getElementById('startLiveQuizBtn').onclick = () => startLiveQuiz();
+
+  // Next Question Button
+  document.getElementById('liveNextBtn').onclick = () => {
+    if(liveIndex < livePool.length - 1) {
+      liveIndex++;
+      showLiveQuestion();
+    } else {
+      finishLiveQuiz();
+    }
+  };
+
+  // Result Actions
+  document.getElementById('retryQuizBtn').onclick = () => startLiveQuiz();
+  document.getElementById('changeTopicsBtn').onclick = () => {
+    document.getElementById('quizResultScreen').classList.add('hidden');
+    document.getElementById('activeQuizScreen').classList.add('hidden');
+    document.getElementById('quizSetupScreen').classList.remove('hidden');
+    const bus = document.getElementById('busFill');
+    if(bus) bus.style.width = '0%';
+  };
+  document.getElementById('reviewWrongBtn').onclick = () => {
+    const list = document.getElementById('quizReviewList');
+    if(wrongAttempts.length === 0) {
+      list.innerHTML = '<div style="padding:14px 0; color:var(--correct); font-family:var(--font-mono);">No wrong answers — 100% Clean Sweep! 🎯</div>';
+      return;
+    }
+    list.innerHTML = wrongAttempts.map(w => `
+      <div style="border-top:1px solid var(--border); padding:12px 0; font-size:13px;">
+        <div style="color:var(--text-main); margin-bottom:6px; white-space:pre-line;">${w.question}</div>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--wrong);">Your Answer: ${w.chosen}</div>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--correct);">Correct: ${w.correct}</div>
+      </div>
+    `).join('');
+  };
+
+  // Export / Import / Reset
+  document.getElementById('exportBackupBtn').onclick = () => {
+    const dl = document.createElement('a');
+    dl.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+    dl.download = `GATE_Arena_${todayStr()}.json`;
+    dl.click();
+  };
+  document.getElementById('importBackupInput').onchange = (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = (evt) => {
+      try {
+        state = JSON.parse(evt.target.result);
+        saveState();
+        location.reload();
+      } catch(err) { alert('Invalid backup JSON'); }
+    };
+    r.readAsText(f);
+  };
+  document.getElementById('resetDataBtn').onclick = () => {
+    if(confirm('Reset all coins and progress data?')) {
+      localStorage.removeItem('gate_gamified_v5');
+      location.reload();
+    }
+  };
+});
+</script>
+</body>
+</html>
