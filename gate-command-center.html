@@ -910,87 +910,138 @@ const PYQ_FREQ = {
   "Compiler Design": {marks:4,fixed:false,data:{2015:3,2016:4,2017:4,2018:3,2019:5,2020:4,2021:3,2022:5,2023:4,2024:3,2025:4,2026:5},hot:["First & Follow Sets","LR(0)/SLR(1)/LALR(1) Parsing","Syntax Directed Translation (SDT)"]}
 };
 
-/* --- 65-TOPIC SYLLABUS DEFINITIONS --- */
+/* --- 73 OFFICIAL GATE CS/IT SYLLABUS TOPICS (ALL 11 SECTIONS) --- */
 const SYLLABUS_SECTIONS = [
   {
     name: "A. General Aptitude (15 Marks Fixed)",
     topics: [
       {id:"A1",title:"Verbal: grammar, sentence completion, analogies, word groups"},
       {id:"A2",title:"Verbal: critical reasoning, reading comprehension"},
-      {id:"A3",title:"Quantitative: data interpretation"},
-      {id:"A4",title:"Quantitative: ratio/proportion, percentages"},
+      {id:"A3",title:"Quantitative: data interpretation (graphs, tables)"},
+      {id:"A4",title:"Quantitative: ratio/proportion, percentages, logarithms"},
       {id:"A5",title:"Quantitative: permutation-combination, probability"},
-      {id:"A6",title:"Quantitative: mensuration, series"},
+      {id:"A6",title:"Quantitative: mensuration, geometry, series"},
       {id:"A7",title:"Analytical: logical reasoning, puzzles, spatial reasoning"}
     ]
   },
   {
     name: "B. Engineering Mathematics (~13 Marks)",
     topics: [
-      {id:"B1",title:"Discrete Math: propositional & first-order logic"},
-      {id:"B2",title:"Discrete Math: sets, relations, functions"},
-      {id:"B3",title:"Discrete Math: partial orders, lattices"},
-      {id:"B4",title:"Discrete Math: monoids, groups"},
-      {id:"B5",title:"Discrete Math: graph theory (connectivity, matching, coloring)"},
-      {id:"B6",title:"Discrete Math: combinatorics (counting, recurrence relations)"},
-      {id:"B7",title:"Linear Algebra: matrices, determinants"},
-      {id:"B8",title:"Linear Algebra: system of linear equations"},
-      {id:"B9",title:"Linear Algebra: eigenvalues, eigenvectors, LU decomposition"},
+      {id:"B1",title:"Discrete Math: propositional & first-order predicate logic"},
+      {id:"B2",title:"Discrete Math: sets, relations, functions, equivalence relations"},
+      {id:"B3",title:"Discrete Math: partial orders, Hasse diagrams, lattices"},
+      {id:"B4",title:"Discrete Math: monoids, groups, Lagrange's theorem"},
+      {id:"B5",title:"Discrete Math: graph theory (connectivity, matching, coloring, planar)"},
+      {id:"B6",title:"Discrete Math: combinatorics (counting, recurrence relations, generating functions)"},
+      {id:"B7",title:"Linear Algebra: matrices, determinants, matrix rank"},
+      {id:"B8",title:"Linear Algebra: systems of linear equations (AX=B consistency)"},
+      {id:"B9",title:"Linear Algebra: eigenvalues, eigenvectors, Cayley-Hamilton, LU decomposition"},
       {id:"B10",title:"Calculus: limits, continuity, differentiability"},
       {id:"B11",title:"Calculus: maxima-minima, mean value theorems"},
-      {id:"B12",title:"Calculus: integration"},
-      {id:"B13",title:"Probability & Stats: random variables, distributions (Poisson, Normal)"},
-      {id:"B14",title:"Probability & Stats: mean/median/mode/variance"},
-      {id:"B15",title:"Probability & Stats: conditional probability, Bayes' theorem"}
+      {id:"B12",title:"Calculus: single & multivariable integration"},
+      {id:"B13",title:"Probability: random variables, distributions (Poisson, Normal, Binomial, Exponential)"},
+      {id:"B14",title:"Probability: mean, median, mode, variance, standard deviation"},
+      {id:"B15",title:"Probability: conditional probability, Bayes' theorem"}
     ]
   },
   {
-    name: "E. Programming & Data Structures (High Weightage)",
+    name: "C. Digital Logic (~5 Marks)",
     topics: [
-      {id:"E1",title:"Programming in C: recursion, pointers, functions, scope"},
-      {id:"E2",title:"Arrays, stacks, queues"},
-      {id:"E3",title:"Linked lists"},
-      {id:"E4",title:"Trees: BST, AVL, B/B+ trees"},
-      {id:"E5",title:"Heaps"},
-      {id:"E6",title:"Graphs (representation, traversals)"},
-      {id:"E7",title:"Hashing"}
+      {id:"C1",title:"Boolean algebra, De Morgan laws, logic gate minimization"},
+      {id:"C2",title:"K-Maps: SOP/POS, Prime Implicants, Essential Prime Implicants"},
+      {id:"C3",title:"Combinational circuits: Multiplexers, Decoders, Encoders, Adders"},
+      {id:"C4",title:"Sequential circuits: Latches, Flip-Flops, Modulo Counters, Shift Registers"},
+      {id:"C5",title:"Number representations: 1's/2's complement overflow, IEEE 754 floating point"}
     ]
   },
   {
-    name: "F. Algorithms (High Weightage)",
+    name: "D. Computer Organization & Architecture (~6 Marks)",
     topics: [
-      {id:"F1",title:"Asymptotic complexity, recurrences (Master theorem)"},
-      {id:"F2",title:"Searching, sorting"},
-      {id:"F3",title:"Hashing (algorithmic perspective)"},
-      {id:"F4",title:"Greedy algorithms"},
-      {id:"F5",title:"Dynamic programming"},
-      {id:"F6",title:"Divide-and-conquer"},
-      {id:"F7",title:"Graph algorithms: BFS/DFS"},
-      {id:"F8",title:"Graph algorithms: shortest paths (Dijkstra, Bellman-Ford)"},
-      {id:"F9",title:"Graph algorithms: MST (Kruskal, Prim)"}
+      {id:"D1",title:"Machine instructions, addressing modes, instruction formats"},
+      {id:"D2",title:"ALU, datapath, hardwired & microprogrammed control unit"},
+      {id:"D3",title:"Instruction pipelining, pipeline hazards (data, structural, control), speedup"},
+      {id:"D4",title:"Memory hierarchy: Cache mapping (direct/associative), hit rate, write policies"},
+      {id:"D5",title:"I/O interface: Interrupts, polling, Direct Memory Access (DMA)"}
     ]
   },
   {
-    name: "I. Operating Systems",
+    name: "E. Programming & Data Structures (~12 Marks)",
     topics: [
-      {id:"I1",title:"Processes, threads"},
-      {id:"I2",title:"CPU scheduling: FCFS, SJF, RR, priority, MLFQ"},
-      {id:"I3",title:"Synchronization: semaphores, monitors, classical problems"},
-      {id:"I4",title:"Deadlock: detection, prevention, avoidance (Banker's algorithm)"},
-      {id:"I5",title:"Memory management: paging, segmentation"},
-      {id:"I6",title:"Virtual memory, page replacement (FIFO, LRU, Optimal)"},
-      {id:"I7",title:"File systems basics"}
+      {id:"E1",title:"Programming in C: recursion, pointers, pointer arithmetic, scope, lifetime"},
+      {id:"E2",title:"Arrays, strings, struct/unions, dynamic memory allocation (malloc/free)"},
+      {id:"E3",title:"Stacks, applications (parenthesis matching, infix/postfix), Queues"},
+      {id:"E4",title:"Linked lists (singly, doubly, circular)"},
+      {id:"E5",title:"Trees: Binary trees, traversals, Binary Search Trees (BST)"},
+      {id:"E6",title:"Balanced Trees: AVL tree rotations, B-Trees & B+ Trees"},
+      {id:"E7",title:"Binary Heaps, priority queues, Hashing & collision resolution"}
     ]
   },
   {
-    name: "K. Computer Networks",
+    name: "F. Algorithms (~13 Marks)",
     topics: [
-      {id:"K1",title:"OSI/TCP-IP layer model"},
-      {id:"K2",title:"Data link layer: framing, error detection (CRC), MAC protocols"},
-      {id:"K3",title:"Network layer: IP addressing, subnetting"},
-      {id:"K4",title:"Network layer: routing (distance vector, link state)"},
-      {id:"K5",title:"Transport layer: TCP/UDP, congestion control, flow control"},
-      {id:"K6",title:"Application layer: DNS, HTTP, email protocols"}
+      {id:"F1",title:"Asymptotic complexity (O, Ω, Θ), Master theorem, substitution method"},
+      {id:"F2",title:"Searching (linear, binary), Sorting (comparison sorts & lower bounds)"},
+      {id:"F3",title:"Divide-and-Conquer algorithms (Merge Sort, Quick Sort)"},
+      {id:"F4",title:"Greedy algorithms (Huffman coding, fractional knapsack, activity selection)"},
+      {id:"F5",title:"Dynamic Programming (0/1 knapsack, LCS, matrix chain, LIS)"},
+      {id:"F6",title:"Graph algorithms: BFS, DFS, cycle detection, topological sort"},
+      {id:"F7",title:"Shortest Paths: Dijkstra's SSSP, Bellman-Ford (negative cycles)"},
+      {id:"F8",title:"All-Pairs Shortest Path: Floyd-Warshall algorithm"},
+      {id:"F9",title:"Minimum Spanning Trees: Kruskal's & Prim's algorithms"}
+    ]
+  },
+  {
+    name: "G. Theory of Computation (~7 Marks)",
+    topics: [
+      {id:"G1",title:"Deterministic Finite Automata (DFA), NFA, ε-NFA to DFA subset construction"},
+      {id:"G2",title:"DFA state minimization (table filling method), Regular Expressions"},
+      {id:"G3",title:"Pumping Lemma for regular languages, closure properties of regular languages"},
+      {id:"G4",title:"Context-Free Grammars (CFG), ambiguity, Pushdown Automata (PDA)"},
+      {id:"G5",title:"Turing Machines, decidability, Halting problem, Rice's theorem"}
+    ]
+  },
+  {
+    name: "H. Compiler Design (~4 Marks)",
+    topics: [
+      {id:"H1",title:"Lexical analysis, regular definitions, token identification"},
+      {id:"H2",title:"Top-Down Parsing: FIRST & FOLLOW sets, LL(1) parsing tables"},
+      {id:"H3",title:"Bottom-Up Parsing: LR(0), SLR(1), LALR(1), CLR(1) item sets"},
+      {id:"H4",title:"Syntax-Directed Translation (SDT), S-attributed vs L-attributed, code optimization"}
+    ]
+  },
+  {
+    name: "I. Operating Systems (~9 Marks)",
+    topics: [
+      {id:"I1",title:"Processes, threads, context switching, fork() process trees"},
+      {id:"I2",title:"CPU scheduling: FCFS, SJF, SRTF, Round Robin, Priority scheduling"},
+      {id:"I3",title:"Process Synchronization: critical section, semaphores, mutex, classical problems"},
+      {id:"I4",title:"Deadlock: 4 conditions, Resource Allocation Graphs, Banker's algorithm"},
+      {id:"I5",title:"Memory Management: Paging, multi-level paging, page table size math"},
+      {id:"I6",title:"Virtual Memory: TLB access times, Demand paging, Page replacement (FIFO/LRU/OPT)"},
+      {id:"I7",title:"Disk scheduling (SSTF/SCAN/C-SCAN), File systems, Inodes"}
+    ]
+  },
+  {
+    name: "J. Databases (DBMS) (~8 Marks)",
+    topics: [
+      {id:"J1",title:"ER Model, cardinality ratios, relational model constraints"},
+      {id:"J2",title:"Relational Algebra (select, project, joins, division), Tuple Calculus, SQL"},
+      {id:"J3",title:"Functional dependencies, attribute closures, candidate keys, canonical cover"},
+      {id:"J4",title:"Normalization: 1NF, 2NF, 3NF, BCNF, lossless join & dependency preservation"},
+      {id:"J5",title:"Indexing: B-Trees & B+ Trees fanout & search math"},
+      {id:"J6",title:"Transactions, ACID properties, Conflict Serializability (precedence graph), 2PL"}
+    ]
+  },
+  {
+    name: "K. Computer Networks (~8 Marks)",
+    topics: [
+      {id:"K1",title:"Concept of layering: OSI 7-layer & TCP/IP protocol architectures"},
+      {id:"K2",title:"Data link layer: framing, error detection (CRC polynomials), MAC (CSMA/CD)"},
+      {id:"K3",title:"Network layer: IPv4 addressing, CIDR subnetting, VLSM, route aggregation"},
+      {id:"K4",title:"IPv4 header fields, packet fragmentation & reassembly math"},
+      {id:"K5",title:"Routing protocols: Distance Vector (count-to-infinity), Link State (OSPF)"},
+      {id:"K6",title:"Transport layer: UDP, TCP sliding window flow control, congestion control (Tahoe/Reno)"},
+      {id:"K7",title:"Application layer: DNS resolution, HTTP/HTTPS, SMTP, FTP, DHCP, ARP, ICMP"}
     ]
   }
 ];

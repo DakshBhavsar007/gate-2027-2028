@@ -1,0 +1,20 @@
+{
+  "name": "gate-2027-2028-command-center",
+  "version": "1.0.0",
+  "description": "GATE CS/IT 2027-2028 Command Center & 160-Day Study Engine",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve .",
+    "dev": "npx -y serve .",
+    "build": "echo \"Zero build step required. Deploy index.html directly!\""
+  },
+  "keywords": [
+    "gate-cs",
+    "gate-it",
+    "pyqs",
+    "gate-2027",
+    "study-engine"
+  ],
+  "author": "DakshBhavsar007",
+  "license": "MIT"
+}
