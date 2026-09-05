@@ -436,8 +436,34 @@ body{
   .podium{grid-template-columns:1fr;gap:.6rem;}
   .pod.r1{transform:none;}
 }
+
+/* SECTION 2 ADVANCED MASTERCLASS STYLES */
+.sec2-container{background:var(--sf);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
+.sec2-topbar{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.6rem;background:linear-gradient(135deg,rgba(14,23,43,0.95),rgba(21,34,61,0.85));border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:1rem;}
+.sec2-title-box h3{font-family:var(--fm);font-size:1.15rem;font-weight:700;color:var(--tr);margin:0 0 0.4rem;display:flex;align-items:center;gap:0.6rem;}
+.sec2-meta-pills{display:flex;gap:0.5rem;flex-wrap:wrap;font-family:var(--fm);font-size:0.76rem;}
+.sec2-pill{padding:3px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--el);color:var(--tm);}
+.sec2-pill.pri{border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.12);color:var(--am);font-weight:600;}
+.sec2-pill.sec{border-color:rgba(94,234,212,0.3);background:rgba(94,234,212,0.1);color:var(--tr);}
+.sec2-nav-tabs{display:flex;overflow-x:auto;background:var(--el);border-bottom:1px solid var(--bd);padding:0.4rem 0.8rem 0;gap:0.4rem;}
+.sec2-tab-btn{padding:0.6rem 1rem;font-family:var(--fm);font-size:0.82rem;font-weight:600;color:var(--tm);background:transparent;border:1px solid transparent;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:0.45rem;}
+.sec2-tab-btn:hover{color:var(--tx);background:rgba(255,255,255,0.04);}
+.sec2-tab-btn.active{color:var(--tr);background:var(--sf);border-color:var(--bd);border-bottom:2px solid var(--tr);}
+.sec2-body{padding:1.6rem;}
+.sec2-tab-content{display:none;animation:sec2FadeIn 0.2s ease-out;}
+.sec2-tab-content.active{display:block;}
+@keyframes sec2FadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.sec2-box{background:var(--el);border:1px solid var(--bd);border-radius:10px;padding:1.25rem;margin-bottom:1.2rem;}
+.sec2-box h4{font-family:var(--fm);font-size:0.95rem;font-weight:700;color:var(--tx);margin:0 0 0.8rem;display:flex;align-items:center;gap:0.5rem;}
+.sec2-memory-grid{font-family:var(--fm);font-size:0.84rem;background:#040813;border:1px solid var(--bds);border-radius:8px;padding:1rem;overflow-x:auto;color:var(--tx);line-height:1.5;margin:0.8rem 0;}
+.sec2-trap-card{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.35);border-left:4px solid var(--no);border-radius:8px;padding:1rem 1.2rem;margin:0.9rem 0;line-height:1.65;font-size:0.88rem;}
+.sec2-formula-table{width:100%;border-collapse:collapse;font-size:0.86rem;margin:0.8rem 0;}
+.sec2-formula-table th,.sec2-formula-table td{padding:0.65rem 0.9rem;border:1px solid var(--bd);text-align:left;}
+.sec2-formula-table th{background:var(--el2);color:var(--tr);font-family:var(--fm);}
+
 </style>
   <script src="gate_drive_banks.js"></script>
+  <script src="gate_advanced_notes.js"></script>
 </head>
 <body>
 <div class="app">
@@ -9340,12 +9366,16 @@ function renderDailyFeed() {
   document.getElementById('todayTopicSub').textContent = `Section: ${mod.sec} · Topic ID: ${mod.id} · Day ${dayNum}/160`;
   document.getElementById('todayTopicTag').textContent = mod.pri;
 
-  // Section 2: Generated Topic Notes
-  document.getElementById('topicContentNotes').innerHTML = `
-    <div class="topic-card" style="margin-bottom:0;">
-      <div style="font-family:var(--fm);font-size:.82rem;color:var(--gd);margin-bottom:.5rem;">SECTION 2 · GENERATED TOPIC CONCEPT NOTES</div>
-      ${mod.notes}
-    </div>`;
+  // Section 2: Advanced Concept Masterclass & Deep Architecture Engine
+  if (typeof renderAdvancedSection2 === 'function') {
+    renderAdvancedSection2(mod, dayNum);
+  } else {
+    document.getElementById('topicContentNotes').innerHTML = `
+      <div class="topic-card" style="margin-bottom:0;">
+        <div style="font-family:var(--fm);font-size:.82rem;color:var(--gd);margin-bottom:.5rem;">SECTION 2 · GENERATED TOPIC CONCEPT NOTES</div>
+        ${mod.notes}
+      </div>`;
+  }
 
   // Section 3: PYQ MCQ Live Quiz & Worked Solutions
   renderDailyGA(dayNum);
