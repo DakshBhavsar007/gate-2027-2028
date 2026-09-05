@@ -68,7 +68,7 @@
 
 | # | Topic | Status | Accuracy % | Last touched |
 |---|-------|--------|-----------|--------------|
-| E1 | Programming in C: recursion, pointers, functions, scope | learning | — | 1 Sep 2026 |
+| E1 | Programming in C: recursion, pointers, functions, scope | drilled | — | 5 Sep 2026 |
 | E2 | Arrays, stacks, queues | not-started | — | — |
 | E3 | Linked lists | not-started | — | — |
 | E4 | Trees: BST, AVL, B/B+ trees | not-started | — | — |

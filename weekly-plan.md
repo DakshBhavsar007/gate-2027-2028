@@ -25,7 +25,7 @@ Starting with **Algorithms** — highest weighted section, lowest self-rated com
 - [ ] Sunday: timed mixed set covering the week, log errors
 
 ### Done
-_(updated as we go)_
+- [x] **Day 1 (5 Sep 2026):** Programming in C — Pointers, Address Arithmetic & Array Decay (`notes/programming-data-structures/c-pointers.md`, `pyqs/programming-data-structures/c-pointers-pyqs.md`)
 
 ---
 
